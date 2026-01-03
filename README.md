@@ -2,7 +2,7 @@
 
 一个基于倪海厦中西医养生理论的交互式网站，提供2026年完整的二十四节气养生指导。该项目融合了中医经典理论、五行八卦智慧和现代Web技术，为用户呈现图文并茂的节气养生方案。
 
-**[在线访问](https://life.fflo.ai)** | **[Manus平台](https://manus.im)**
+**[在线访问](https://life.fflo.ai)** | **[Manus平台（带有推荐码）](https://manus.im/invitation/TMQKZ8MZCVVJZYN)**
 
 ---
 
