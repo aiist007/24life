@@ -339,8 +339,8 @@ export function MyComponent() {
 ## 📞 联系方式
 
 - **项目主页**：[life.fflo.ai](https://life.fflo.ai)
-- **GitHub**：[yangsheng-calendar](https://github.com/yourusername/yangsheng-calendar)
-- **Manus平台**：[manus.im](https://manus.im)
+- **GitHub**：[24life](https://github.com/aiist007/24life)
+- **Manus平台**：[manus.im](https://manus.im/invitation/TMQKZ8MZCVVJZYN)
 
 ---
 
@@ -358,9 +358,9 @@ export function MyComponent() {
 - [黄帝内经原文](https://baike.baidu.com/item/%E9%BB%84%E5%B8%9D%E5%86%85%E7%BB%8F)
 - [二十四节气百科](https://baike.baidu.com/item/%E4%BA%8C%E5%8D%81%E5%9B%9B%E8%8A%82%E6%B0%94)
 - [中医养生指南](https://www.tcmworld.org/)
-
+- [z-lib](https://z-library.sk/)
 ---
 
 **最后更新**：2026年1月3日  
 **版本**：1.0.0  
-**维护者**：Manus AI
+**维护者**：Aiist007
