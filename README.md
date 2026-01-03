@@ -337,8 +337,6 @@ export function MyComponent() {
 ---
 
 ## 📞 联系方式
-
-- **项目主页**：[life.fflo.ai](https://life.fflo.ai)
 - **GitHub**：[24life](https://github.com/aiist007/24life)
 - **Manus平台**：[manus.im](https://manus.im/invitation/TMQKZ8MZCVVJZYN)
 
