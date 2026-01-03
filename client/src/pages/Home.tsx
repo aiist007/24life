@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Calendar, Grid3X3, LayoutGrid } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -21,6 +21,10 @@ export default function Home() {
   const [showDetail, setShowDetail] = useState(false);
   const [viewMode, setViewMode] = useState<"grid" | "calendar" | "wheel">("grid");
   const [seasonFilter, setSeasonFilter] = useState<string>("all");
+
+  useEffect(() => {
+    document.title = "倪海厦二十四节气养生历 - 2026年节气养生指导 | 食疗作息穴位按摩";
+  }, []);
 
   const handleSelectTerm = (term: SolarTerm) => {
     setSelectedTerm(term);

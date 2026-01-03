@@ -40,7 +40,7 @@ export function HeroSection() {
         transition={{ duration: 2 }}
         className="absolute top-10 right-10 w-48 h-48"
       >
-        <img src="/images/bagua-pattern.png" alt="" className="w-full h-full opacity-30" />
+        <img src="/images/bagua-pattern.png" alt="八卦图案装饰" className="w-full h-full opacity-30" />
       </motion.div>
 
       {/* 主内容 */}

@@ -25,7 +25,7 @@ export function FiveElementsChart() {
           transition={{ duration: 120, repeat: Infinity, ease: "linear" }}
           className="w-32 h-32 opacity-10"
         >
-          <img src="/images/bagua-pattern.png" alt="" className="w-full h-full" />
+          <img src="/images/bagua-pattern.png" alt="五行八卦图案" className="w-full h-full" />
         </motion.div>
       </div>
 

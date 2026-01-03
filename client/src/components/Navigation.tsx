@@ -60,7 +60,7 @@ export function Navigation() {
               className="flex items-center gap-2"
             >
               <div className="w-10 h-10 rounded-full overflow-hidden">
-                <img src="/images/bagua-pattern.png" alt="Logo" className="w-full h-full object-cover" />
+                <img src="/images/bagua-pattern.png" alt="节气养生历Logo" className="w-full h-full object-cover" />
               </div>
               <span 
                 className={`text-xl font-bold transition-colors ${isScrolled ? "text-foreground" : "text-white"}`}
@@ -140,7 +140,7 @@ export function Footer() {
           <div>
             <div className="flex items-center gap-2 mb-4">
               <div className="w-10 h-10 rounded-full overflow-hidden">
-                <img src="/images/bagua-pattern.png" alt="Logo" className="w-full h-full object-cover" />
+                <img src="/images/bagua-pattern.png" alt="节气养生历Logo" className="w-full h-full object-cover" />
               </div>
               <span 
                 className="text-xl font-bold"
