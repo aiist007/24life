@@ -21,6 +21,8 @@ const navItems: NavItem[] = [
   { id: "health", label: "健康标准" }
 ];
 
+import { ChatBox } from "./ChatBox";
+
 export function Navigation() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -46,23 +48,22 @@ export function Navigation() {
       <motion.nav
         initial={{ y: -100 }}
         animate={{ y: 0 }}
-        className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-          isScrolled 
-            ? "bg-background/80 backdrop-blur-lg shadow-sm border-b" 
+        className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${isScrolled
+            ? "bg-background/80 backdrop-blur-lg shadow-sm border-b"
             : "bg-transparent"
-        }`}
+          }`}
       >
         <div className="container">
           <div className="flex items-center justify-between h-16">
             {/* Logo */}
-            <button 
+            <button
               onClick={() => scrollToSection("home")}
               className="flex items-center gap-2"
             >
               <div className="w-10 h-10 rounded-full overflow-hidden">
                 <img src="/images/bagua-pattern.png" alt="节气养生历Logo" className="w-full h-full object-cover" />
               </div>
-              <span 
+              <span
                 className={`text-xl font-bold transition-colors ${isScrolled ? "text-foreground" : "text-white"}`}
                 style={{ fontFamily: "'Noto Serif SC', serif" }}
               >
@@ -70,17 +71,21 @@ export function Navigation() {
               </span>
             </button>
 
+            {/* Chatbox Entry - Highlighted for User */}
+            <div className="hidden md:block flex-1 max-w-xs mx-8">
+              <ChatBox />
+            </div>
+
             {/* Desktop Navigation */}
             <div className="hidden md:flex items-center gap-1">
               {navItems.map((item) => (
                 <button
                   key={item.id}
                   onClick={() => scrollToSection(item.id)}
-                  className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
-                    isScrolled 
-                      ? "text-foreground/70 hover:text-foreground hover:bg-muted" 
+                  className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${isScrolled
+                      ? "text-foreground/70 hover:text-foreground hover:bg-muted"
                       : "text-white/80 hover:text-white hover:bg-white/10"
-                  }`}
+                    }`}
                 >
                   {item.label}
                 </button>
@@ -142,7 +147,7 @@ export function Footer() {
               <div className="w-10 h-10 rounded-full overflow-hidden">
                 <img src="/images/bagua-pattern.png" alt="节气养生历Logo" className="w-full h-full object-cover" />
               </div>
-              <span 
+              <span
                 className="text-xl font-bold"
                 style={{ fontFamily: "'Noto Serif SC', serif" }}
               >
@@ -161,7 +166,7 @@ export function Footer() {
             <ul className="space-y-2 text-sm text-muted-foreground">
               {navItems.map(item => (
                 <li key={item.id}>
-                  <button 
+                  <button
                     onClick={() => document.getElementById(item.id)?.scrollIntoView({ behavior: "smooth" })}
                     className="hover:text-foreground transition-colors"
                   >
