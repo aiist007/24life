@@ -5,6 +5,7 @@ import { fileURLToPath } from "url";
 import dotenv from "dotenv";
 import axios from "axios";
 import { indexDocuments, searchDocuments, webSearch } from "./rag.js";
+import { getSolarTerm, formatChineseDate, isTimeSensitive, extractLocation } from "./utils.js";
 
 dotenv.config();
 
@@ -33,20 +34,36 @@ async function startServer() {
     let webContext = ""; // Define outside to use in catch block
 
     try {
-      const { message } = req.body;
+      let { message, location = "北京" } = req.body;
       if (!message) {
         return res.status(400).json({ error: "Message is required" });
       }
 
+      // Detect location from message if not provided or to override
+      location = extractLocation(message, location);
+
+      const now = new Date();
+      const chineseDate = formatChineseDate(now);
+      const solarTerm = getSolarTerm(now);
+      const isTimeQuery = isTimeSensitive(message);
+
       console.log(`Received chat message: ${message}`);
+      console.log(`Context: Date=${chineseDate}, Term=${solarTerm}, Location=${location}, TimeSensitive=${isTimeQuery}`);
 
-      // 1. Get context from Master Ni documents
-      const localContext = searchDocuments(message);
+      // 1. Enrich query for search if time-sensitive
+      let searchQuery = message;
+      if (isTimeQuery) {
+        searchQuery = `${solarTerm} ${location} ${message}`;
+        console.log(`Enriched search query: ${searchQuery}`);
+      }
 
-      // 2. Get web search context (parallel attempt)
+      // 2. Get context from Master Ni documents
+      const localContext = searchDocuments(searchQuery);
+
+      // 3. Get web search context (parallel attempt)
       try {
         // Don't let web search fail the whole request
-        webContext = await webSearch(message);
+        webContext = await webSearch(searchQuery);
       } catch (e) {
         console.error("Web search execution failed:", e);
         webContext = "网络搜索暂不可用。";
@@ -54,6 +71,11 @@ async function startServer() {
 
       // Combine context
       const combinedContext = `
+【当前时空背景】：
+- 时间：${chineseDate}
+- 地点：${location}
+- 节气：${solarTerm}
+
 【本地资料库（倪海厦著作）】：
 ${localContext}
 
@@ -78,12 +100,12 @@ ${webContext}
               ${combinedContext}
               
               回答要求：
-              1. **优先引用本地资料库（倪海厦著作）中的论述**，这是最权威的来源。
-              2. 参考网络搜索结果来补充最新的信息或解释某些概念，但需甄别信息准确性。
-              3. 经过反复思考，确保信息准确。如果本地资料和网络资料有冲突，以倪师的本地资料为准。
-              4. 使用 Markdown 格式进行排版，确保清晰易读。
-              5. 语气要谦和且具有倪师的风格（例如：“经方”、“阳气”、“阴阳平衡”等术语的恰当使用）。
-              6. 如果参考资料中没有相关内容，请如实告知，但仍基于你的中医知识库给出建议。`
+              1. **优先考虑时令与地域**：如果资料库或网络搜索中有关于当前节气（${solarTerm}）和地点（${location}）的养生建议，请务必优先结合这些信息进行回答。
+              2. **优先引用本地资料库（倪海厦著作）中的论述**，这是最权威的来源。
+              3. 参考网络搜索结果来补充最新的食谱或生活建议，但需甄别信息是否符合中医原则。
+              4. **食疗建议**：针对时令推荐食物、菜谱时，应结合倪师强调的“阳气”、“阴阳平衡”等理念。
+              5. 使用 Markdown 格式进行排版，确保清晰易读。
+              6. 语气要谦和且具有倪师的风格（例如：“经方”、“阳气”、“阴阳平衡”等术语的恰当使用）。`
             },
             { role: "user", content: message }
           ],
