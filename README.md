@@ -54,7 +54,7 @@
    ```env
    GEMINI_API_KEY=你的API密钥
    GEMINI_API_URL=https://llm.ai-nebula.com/v1/chat/completions
-   GEMINI_MODEL=gemini-2.0-flash-exp  # 或你选择的模型
+   GEMINI_MODEL=gemini-3-flash-preview  # 或你选择的模型
    ```
 
 3. **启动开发服务器**
