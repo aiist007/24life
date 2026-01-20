@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from "react";
-import { Send, User, Bot, X, MessageSquare, Loader2, Download } from "lucide-react";
+import { Send, User, Bot, X, MessageSquare, Loader2, Download, UtensilsCrossed } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -16,7 +16,16 @@ const STORAGE_KEY = "master_ni_chat_history";
 export function ChatBox() {
     const [isOpen, setIsOpen] = useState(false);
     const [input, setInput] = useState("");
+    const [isScrolled, setIsScrolled] = useState(false);
     const messagesEndRef = useRef<HTMLDivElement>(null);
+
+    useEffect(() => {
+        const handleScroll = () => {
+            setIsScrolled(window.scrollY > 50);
+        };
+        window.addEventListener("scroll", handleScroll);
+        return () => window.removeEventListener("scroll", handleScroll);
+    }, []);
 
     const [messages, setMessages] = useState<Message[]>(() => {
         if (typeof window !== 'undefined') {
@@ -45,10 +54,11 @@ export function ChatBox() {
         messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
     }, [messages, isOpen]);
 
-    const handleSend = async () => {
-        if (!input.trim() || isLoading) return;
+    const handleSend = async (overrideInput?: string) => {
+        const messageToSend = overrideInput || input;
+        if (!messageToSend.trim() || isLoading) return;
 
-        const userMsg: Message = { role: "user", content: input };
+        const userMsg: Message = { role: "user", content: messageToSend };
         setMessages(prev => [...prev, userMsg]);
         setInput("");
         setIsLoading(true);
@@ -57,7 +67,7 @@ export function ChatBox() {
             const response = await fetch("/api/chat", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ message: input })
+                body: JSON.stringify({ message: messageToSend })
             });
 
             if (!response.ok) throw new Error("Failed to get response");
@@ -85,25 +95,73 @@ export function ChatBox() {
     };
 
     return (
-        <div className="relative">
-            <Button
-                variant="default"
-                className="flex items-center gap-2 bg-primary text-primary-foreground hover:bg-primary/90 transition-all font-bold py-2.5 px-6 rounded-full shadow-lg animate-breathe hover:animate-none scale-105 active:scale-95 border-2 border-white/10"
-                onClick={() => setIsOpen(true)}
-            >
-                <MessageSquare className="w-5 h-5 fill-current/20" />
-                <span className="text-base">对话倪师</span>
-            </Button>
+        <>
+            {/* Floating Buttons Container - Aligned with Logo area */}
+            <div className="fixed top-0 left-0 right-0 z-[60] pointer-events-none">
+                <div className="container flex items-center h-16 px-4">
+                    <div className="pl-20 md:pl-40 flex items-center gap-3 pointer-events-auto">
+                        <AnimatePresence mode="wait">
+                            {!isOpen && (
+                                <motion.div
+                                    key="floating-controls"
+                                    initial={{ opacity: 0, x: -20, scale: 0.95 }}
+                                    animate={{ opacity: 1, x: 0, scale: 1 }}
+                                    exit={{ opacity: 0, x: -20, scale: 0.95 }}
+                                    className="flex items-center gap-3"
+                                >
+                                    <Button
+                                        variant="secondary"
+                                        className={`flex items-center gap-2 transition-all font-medium py-1.5 px-3 rounded-full shadow-sm border group h-8 ${
+                                            isScrolled 
+                                            ? "bg-primary/10 text-primary border-primary/20 hover:bg-primary/20" 
+                                            : "bg-white/20 backdrop-blur-md text-white border-white/10 hover:bg-white/30"
+                                        }`}
+                                        onClick={() => {
+                                            setIsOpen(true);
+                                            handleSend("今天吃什么");
+                                        }}
+                                    >
+                                        <UtensilsCrossed className={`w-3.5 h-3.5 group-hover:rotate-12 transition-transform ${isScrolled ? "text-orange-600" : "text-orange-400"}`} />
+                                        <span className="text-xs">今天吃什么</span>
+                                    </Button>
+                                    <Button
+                                        variant="default"
+                                        className={`flex items-center gap-2 transition-all font-bold py-1.5 px-4 rounded-full shadow-md hover:scale-105 active:scale-95 border h-8 ${
+                                            isScrolled
+                                            ? "bg-primary text-primary-foreground border-transparent shadow-primary/20"
+                                            : "bg-white text-primary border-white/20 shadow-white/10"
+                                        }`}
+                                        onClick={() => setIsOpen(true)}
+                                    >
+                                        <MessageSquare className={`w-4 h-4 fill-current/20 ${isScrolled ? "" : "text-primary"}`} />
+                                        <span className="text-sm">对话倪师</span>
+                                    </Button>
+                                </motion.div>
+                            )}
+                        </AnimatePresence>
+                    </div>
+                </div>
+            </div>
 
             <AnimatePresence>
                 {isOpen && (
-                    <motion.div
-                        initial={{ opacity: 0, scale: 0.9, y: 20 }}
-                        animate={{ opacity: 1, scale: 1, y: 0 }}
-                        exit={{ opacity: 0, scale: 0.9, y: 20 }}
-                        className="fixed bottom-4 right-4 w-[92vw] sm:w-[420px] h-[70vh] max-h-[600px] bg-background border shadow-2xl rounded-2xl flex flex-col z-[100]"
-                        style={{ isolation: "isolate" }}
-                    >
+                    <>
+                        {/* Backdrop for focus and stability on mobile */}
+                        <motion.div
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            exit={{ opacity: 0 }}
+                            onClick={() => setIsOpen(false)}
+                            className="fixed inset-0 bg-black/20 backdrop-blur-[2px] z-[90] md:hidden"
+                        />
+                        <motion.div
+                            key="chat-window"
+                            initial={{ opacity: 0, scale: 0.95, y: 20 }}
+                            animate={{ opacity: 1, scale: 1, y: 0 }}
+                            exit={{ opacity: 0, scale: 0.95, y: 20 }}
+                            className="fixed bottom-4 right-4 w-[92vw] sm:w-[420px] h-[70vh] max-h-[600px] bg-background border shadow-2xl rounded-2xl flex flex-col z-[100] overflow-hidden"
+                            style={{ isolation: "isolate" }}
+                        >
                         {/* Header */}
                         <div className="p-3 border-b bg-primary flex items-center justify-between text-primary-foreground rounded-t-2xl shrink-0">
                             <div className="flex items-center gap-2">
@@ -181,7 +239,21 @@ export function ChatBox() {
                         </div>
 
                         {/* Input Area */}
-                        <div className="p-3 border-t bg-muted/30 shrink-0 rounded-b-2xl">
+                        <div className="p-3 border-t bg-muted/30 shrink-0">
+                            <div className="mb-2 flex justify-start">
+                                <Button
+                                    variant="secondary"
+                                    size="sm"
+                                    className="text-[10px] h-7 gap-1 rounded-full bg-background border border-primary/10 hover:bg-background/80 transition-colors"
+                                    onClick={() => {
+                                        handleSend("今天吃什么");
+                                    }}
+                                    disabled={isLoading}
+                                >
+                                    <UtensilsCrossed className="w-3 h-3 text-orange-500" />
+                                    今天吃什么
+                                </Button>
+                            </div>
                             <form
                                 className="flex gap-2"
                                 onSubmit={(e) => {
@@ -201,8 +273,9 @@ export function ChatBox() {
                             </form>
                         </div>
                     </motion.div>
+                    </>
                 )}
             </AnimatePresence>
-        </div>
+        </>
     );
 }

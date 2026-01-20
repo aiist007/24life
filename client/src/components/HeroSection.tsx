@@ -1,6 +1,7 @@
 import { motion } from "framer-motion";
-import { ChevronDown } from "lucide-react";
+import { ChevronDown, UtensilsCrossed } from "lucide-react";
 import { getCurrentSolarTerm, getSeasonBackground } from "@/data/solarTerms";
+import { Button } from "@/components/ui/button";
 
 /*
  * 设计风格：四时流转 - 自然意象美学

@@ -21,8 +21,6 @@ const navItems: NavItem[] = [
   { id: "health", label: "健康标准" }
 ];
 
-import { ChatBox } from "./ChatBox";
-
 export function Navigation() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -70,11 +68,6 @@ export function Navigation() {
                 节气养生
               </span>
             </button>
-
-            {/* Chatbox Entry - Highlighted for User */}
-            <div className="hidden md:block flex-1 max-w-xs mx-8">
-              <ChatBox />
-            </div>
 
             {/* Desktop Navigation */}
             <div className="hidden md:flex items-center gap-1">

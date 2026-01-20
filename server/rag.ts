@@ -93,15 +93,32 @@ export async function indexDocuments(docsPath: string) {
             } else if (ext === '.docx') {
                 const result = await mammoth.extractRawText({ path: filePath });
                 content = result.value;
-            } else if (ext === '.epub') {
+            } else if (ext === '.epub_disabled') {
+                // Temporarily disabled due to process-crashing bugs in epub-parser
+                /*
                 try {
                     // Extract text from EPUB using epub-parser
-                    const epubData = await new Promise<any>((resolve, reject) => {
-                        epubParser.open(filePath, (err: any, data: any) => {
-                            if (err) reject(err);
-                            else resolve(data);
-                        });
-                    });
+                    // Use a timeout and more robust error handling for the parser
+                    const epubData = await Promise.race([
+                        new Promise<any>((resolve, reject) => {
+                            try {
+                                // Double check it's still a file and hasn't been deleted or moved
+                                if (!fs.existsSync(filePath)) {
+                                    return reject(new Error('File does not exist'));
+                                }
+                                
+                                epubParser.open(filePath, (err: any, data: any) => {
+                                    if (err) {
+                                        console.error(`EPUB callback error for ${file}:`, err);
+                                        reject(err);
+                                    } else resolve(data);
+                                });
+                            } catch (e) {
+                                reject(e);
+                            }
+                        }),
+                        new Promise((_, reject) => setTimeout(() => reject(new Error('EPUB parsing timeout')), 15000))
+                    ]);
 
                     if (epubData && epubData.sections) {
                         content = epubData.sections
@@ -111,8 +128,8 @@ export async function indexDocuments(docsPath: string) {
                     }
                 } catch (e) {
                     console.error(`EPUB parsing failed for ${file}:`, e);
-                    // content = `[EPUB Document: ${file}]`; // Don't index empty if failed
                 }
+                */
             }
 
             if (content) {
